@@ -34,3 +34,10 @@ export function signIn(email: string, password: string): boolean {
 
   return true
 }
+
+export function signOut() {
+  document.cookie = 'auth=; Max-Age=0; path=/'
+  document.cookie = 'lastActivity=; Max-Age=0; path=/'
+
+  window.location.href = '/login'
+}
