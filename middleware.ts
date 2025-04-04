@@ -2,15 +2,25 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 const publicRoutes = ['/login', '/register']
-
+const AUTH_COOKIE_NAME = 'auth'
+const LAST_ACTIVITY_COOKIE_NAME = 'lastActivity'
 const MAX_INACTIVITY_MINUTES = 5
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isPublic = publicRoutes.includes(pathname)
+  const isRoot = pathname === '/'
 
-  const auth = request.cookies.get('auth')?.value === 'true'
-  const lastActivity = request.cookies.get('lastActivity')?.value
+  const auth = request.cookies.get(AUTH_COOKIE_NAME)?.value === 'true'
+  const lastActivity = request.cookies.get(LAST_ACTIVITY_COOKIE_NAME)?.value
+
+  if (isRoot && auth) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  if (isRoot && !auth) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
 
   if (!auth && !isPublic) {
     return NextResponse.redirect(new URL('/login', request.url))
@@ -19,29 +29,31 @@ export function middleware(request: NextRequest) {
   if (auth && lastActivity) {
     const last = new Date(lastActivity)
     const now = new Date()
-
     const diffMs = now.getTime() - last.getTime()
     const diffMin = diffMs / (1000 * 60)
 
     if (diffMin > MAX_INACTIVITY_MINUTES) {
-      const res = NextResponse.redirect(new URL('/login', request.url))
-      res.cookies.set('auth', '', { maxAge: 0, path: '/' })
-      res.cookies.set('lastActivity', '', { maxAge: 0, path: '/' })
-      return res
+      const response = NextResponse.redirect(new URL('/login', request.url))
+      response.cookies.delete(AUTH_COOKIE_NAME)
+      response.cookies.delete(LAST_ACTIVITY_COOKIE_NAME)
+      return response
     }
   }
 
   if (auth) {
-    const res = NextResponse.next()
-    res.cookies.set('lastActivity', new Date().toISOString(), {
+    const response = NextResponse.next()
+    response.cookies.set(LAST_ACTIVITY_COOKIE_NAME, new Date().toISOString(), {
       path: '/',
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
     })
-    return res
+    return response
   }
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/', '/dashboard/:path*', '/login', '/register'],
 }
