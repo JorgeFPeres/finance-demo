@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 interface FinanceCardProps {
   category: string
@@ -15,6 +15,7 @@ export function FinanceCard({
   variation,
   symbol,
 }: FinanceCardProps) {
+  const router = useRouter()
   const isNegative = variation < 0
   const formattedPrice = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -23,8 +24,15 @@ export function FinanceCard({
 
   const formattedVariation = `${isNegative ? '' : '+'}${variation.toFixed(2)}%`
 
+  const handleCardClick = () => {
+    router.push(`/details/${encodeURIComponent(symbol)}`)
+  }
+
   return (
-    <div className='bg-[#2b2b2b] rounded-xl p-6 text-white'>
+    <div
+      className='bg-[#2b2b2b] rounded-xl p-6 text-white cursor-pointer transition-all hover:bg-[#333333]'
+      onClick={handleCardClick}
+    >
       <p className='text-gray-400 text-sm mb-2'>{category}</p>
       <div className='flex justify-between items-start'>
         <div>
