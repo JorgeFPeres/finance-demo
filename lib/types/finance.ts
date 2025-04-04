@@ -40,5 +40,5 @@ export interface FinanceData {
   bitcoin: {
     [key: string]: Bitcoin
   }
-  taxes: Tax
+  taxes: Tax[]
 }
