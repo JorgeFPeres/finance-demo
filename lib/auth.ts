@@ -25,11 +25,12 @@ export function signIn(email: string, password: string): boolean {
   const user = users.find((u) => u.email === email && u.password === password)
   if (!user) return false
 
-  const token = generateToken()
-  localStorage.setItem(TOKEN_KEY, token)
-  return true
-}
+  document.cookie = 'auth=true; path=/'
 
-function generateToken() {
-  return Math.random().toString(36).substring(2)
+  const now = new Date().toISOString()
+
+  document.cookie = `auth=true; path=/`
+  document.cookie = `lastActivity=${now}; path=/`
+
+  return true
 }
