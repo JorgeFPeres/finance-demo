@@ -8,6 +8,17 @@ type User = {
   password: string
 }
 
+export function registerUser(user: User): boolean {
+  const users: User[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]')
+
+  const userExists = users.some((u) => u.email === user.email)
+  if (userExists) return false
+
+  users.push(user)
+  localStorage.setItem(USERS_KEY, JSON.stringify(users))
+  return true
+}
+
 export function signIn(email: string, password: string): boolean {
   const users: User[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]')
 
