@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { signIn } from '@/lib/auth'
 
 type FormValues = {
   email: string
@@ -25,7 +26,18 @@ export function AuthForm() {
   const onSubmit = async (data: FormValues) => {
     setFormError(null)
 
-    console.log('Form submitted:', data)
+    try {
+      const success = await signIn(data.email, data.password)
+
+      if (!success) {
+        setFormError('Invalid credentials')
+        return
+      }
+
+      router.push('/dashboard')
+    } catch (error) {
+      setFormError('Something went wrong')
+    }
   }
 
   return (
