@@ -7,6 +7,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { signIn, registerUser } from '@/lib/auth'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface AuthFormData {
   email: string
@@ -34,7 +35,7 @@ export function AuthForm() {
       if (isLogin) {
         const success = await signIn(email, password)
         if (!success) {
-          setErrorMessage('Invalid credentials')
+          setErrorMessage('Credenciais inválidas')
           return
         }
         router.push('/dashboard')
@@ -42,15 +43,21 @@ export function AuthForm() {
       } else {
         const success = registerUser({ email, password })
         if (!success) {
-          setErrorMessage('Email already registered')
+          setErrorMessage('Email já registrado')
           return
         }
+        toast.success(
+          'Cadastro realizado com sucesso! Faça seu login para continuar.',
+          {
+            duration: 4000,
+          }
+        )
         router.push('/login')
         router.refresh()
       }
     } catch (error) {
-      console.error('Error on authentication:', error)
-      setErrorMessage('An error occurred. Please try again.')
+      console.error('Erro na autenticação:', error)
+      setErrorMessage('Ocorreu um erro. Tente novamente.')
     }
   }
 

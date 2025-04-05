@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { ReactQueryProvider } from '@/lib/service'
 import { Header } from '@/components/ui/header'
+import { Toaster } from 'sonner'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,6 +34,7 @@ export default function RootLayout({
         <main className='flex-1 flex flex-col'>
           <ReactQueryProvider>{children}</ReactQueryProvider>
         </main>
+        <Toaster richColors />
       </body>
     </html>
   )
