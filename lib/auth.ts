@@ -1,12 +1,20 @@
 'use client'
 
 export const USERS_KEY = 'users'
-export const TOKEN_KEY = 'session_token'
 
-type User = {
+interface User {
   email: string
   password: string
 }
+
+interface Session {
+  email: string
+  lastActivity: string
+}
+
+export const AUTH_COOKIE_NAME = 'auth'
+export const LAST_ACTIVITY_COOKIE_NAME = 'lastActivity'
+export const SESSION_KEY = 'session'
 
 export function registerUser(user: User): boolean {
   const users: User[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]')
@@ -19,25 +27,64 @@ export function registerUser(user: User): boolean {
   return true
 }
 
-export function signIn(email: string, password: string): boolean {
-  const users: User[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]')
+export async function signIn(
+  email: string,
+  password: string
+): Promise<boolean> {
+  try {
+    const users: User[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]')
+    const user = users.find((u) => u.email === email && u.password === password)
 
-  const user = users.find((u) => u.email === email && u.password === password)
-  if (!user) return false
+    if (!user) return false
 
-  document.cookie = 'auth=true; path=/'
+    const session: Session = {
+      email,
+      lastActivity: new Date().toISOString(),
+    }
 
-  const now = new Date().toISOString()
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(session))
 
-  document.cookie = `auth=true; path=/`
-  document.cookie = `lastActivity=${now}; path=/`
+    const now = new Date().toISOString()
+    document.cookie = `${AUTH_COOKIE_NAME}=true; path=/`
+    document.cookie = `${LAST_ACTIVITY_COOKIE_NAME}=${now}; path=/`
 
-  return true
+    return true
+  } catch (error) {
+    console.error('Erro ao fazer login:', error)
+    return false
+  }
 }
 
-export function signOut() {
-  document.cookie = 'auth=; Max-Age=0; path=/'
-  document.cookie = 'lastActivity=; Max-Age=0; path=/'
+export function getSession(): Session | null {
+  try {
+    const sessionData = sessionStorage.getItem(SESSION_KEY)
+    if (!sessionData) return null
 
-  window.location.href = '/login'
+    return JSON.parse(sessionData)
+  } catch (error) {
+    console.error('Erro ao ler sessão:', error)
+    return null
+  }
+}
+
+export function updateSessionActivity() {
+  try {
+    const session = getSession()
+    if (!session) return
+
+    session.lastActivity = new Date().toISOString()
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(session))
+  } catch (error) {
+    console.error('Erro ao atualizar atividade:', error)
+  }
+}
+
+export async function clearSession(): Promise<void> {
+  try {
+    sessionStorage.removeItem(SESSION_KEY)
+    document.cookie = `${AUTH_COOKIE_NAME}=; Max-Age=0; path=/`
+    document.cookie = `${LAST_ACTIVITY_COOKIE_NAME}=; Max-Age=0; path=/`
+  } catch (error) {
+    console.error('Erro ao limpar sessão:', error)
+  }
 }

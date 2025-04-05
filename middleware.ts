@@ -36,6 +36,12 @@ export function middleware(request: NextRequest) {
       const response = NextResponse.redirect(new URL('/login', request.url))
       response.cookies.delete(AUTH_COOKIE_NAME)
       response.cookies.delete(LAST_ACTIVITY_COOKIE_NAME)
+
+      response.headers.set(
+        'Set-Cookie',
+        'clear_session=true; path=/; max-age=1'
+      )
+
       return response
     }
   }

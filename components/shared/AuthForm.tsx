@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { signIn, registerUser } from '@/lib/auth'
 import Link from 'next/link'
 
-type AuthFormData = {
+interface AuthFormData {
   email: string
   password: string
 }
@@ -26,36 +26,44 @@ export function AuthForm() {
   const isLogin = pathname === '/login'
   const [errorMessage, setErrorMessage] = useState('')
 
-  const onSubmit = (data: AuthFormData) => {
-    const { email, password } = data
+  const onSubmit = async (data: AuthFormData) => {
+    try {
+      const { email, password } = data
+      setErrorMessage('')
 
-    if (isLogin) {
-      const success = signIn(email, password)
-      if (!success) {
-        setErrorMessage('Invalid credentials')
-        return
+      if (isLogin) {
+        const success = await signIn(email, password)
+        if (!success) {
+          setErrorMessage('Invalid credentials')
+          return
+        }
+        router.push('/dashboard')
+        router.refresh()
+      } else {
+        const success = registerUser({ email, password })
+        if (!success) {
+          setErrorMessage('Email already registered')
+          return
+        }
+        router.push('/login')
+        router.refresh()
       }
-      router.push('/dashboard')
-    } else {
-      const success = registerUser({ email, password })
-      if (!success) {
-        setErrorMessage('Email already registered')
-        return
-      }
-      router.push('/login')
+    } catch (error) {
+      console.error('Error on authentication:', error)
+      setErrorMessage('An error occurred. Please try again.')
     }
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
       <h1 className='text-2xl font-semibold text-center'>
-        {isLogin ? 'Login' : 'Register'}
+        {isLogin ? 'Login' : 'Cadastro'}
       </h1>
 
       <Input {...register('email')} placeholder='Email' type='email' required />
       <Input
         {...register('password')}
-        placeholder='Password'
+        placeholder='Senha'
         type='password'
         required
       />
@@ -64,23 +72,27 @@ export function AuthForm() {
         <p className='text-red-500 text-sm text-center'>{errorMessage}</p>
       )}
 
-      <Button type='submit' className='w-full' disabled={isSubmitting}>
-        {isSubmitting ? 'Please wait...' : isLogin ? 'Login' : 'Register'}
+      <Button
+        type='submit'
+        className='w-full bg-indigo-400 text-white hover:bg-indigo-500'
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? 'Aguarde...' : isLogin ? 'Entrar' : 'Cadastrar'}
       </Button>
 
       <div className='text-center text-sm mt-4'>
         {isLogin ? (
           <>
-            Don’t have an account?{' '}
-            <Link href='/register' className='text-blue-600 hover:underline'>
-              Sign up
+            Não tem uma conta?{' '}
+            <Link href='/register' className='text-indigo-400 hover:underline'>
+              Cadastre-se
             </Link>
           </>
         ) : (
           <>
-            Already have an account?{' '}
-            <Link href='/login' className='text-blue-600 hover:underline'>
-              Login
+            Já tem uma conta?{' '}
+            <Link href='/login' className='text-indigo-400 hover:underline'>
+              Faça login
             </Link>
           </>
         )}
