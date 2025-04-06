@@ -4,7 +4,6 @@ import { useFinanceData } from '@/hooks/useFinanceData'
 import { Currency } from '@/lib/types/finance'
 import { CurrencyCard } from '@/components/dashboard/currency-card'
 import { StockCard } from '@/components/dashboard/stock-card'
-import { BitcoinCard } from '@/components/dashboard/bitcoin-card'
 import { SectionHeader } from '@/components/ui/section-header'
 
 export default function Dashboard() {
@@ -62,18 +61,6 @@ export default function Dashboard() {
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
           {Object.entries(data.stocks).map(([key, stock]) => (
             <StockCard key={key} symbol={key} stock={stock} />
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <SectionHeader
-          title='Criptomoedas'
-          subtitle='Bitcoin e outras criptomoedas nas principais exchanges'
-        />
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {Object.entries(data.bitcoin).map(([key, bitcoin]) => (
-            <BitcoinCard key={key} symbol={key} bitcoin={bitcoin} />
           ))}
         </div>
       </div>

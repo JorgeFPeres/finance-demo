@@ -13,7 +13,6 @@ import { ptBR } from 'date-fns/locale'
 interface PricePoint {
   timestamp: number
   price: number
-  variation: number
 }
 
 interface PriceChartProps {
