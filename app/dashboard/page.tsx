@@ -7,6 +7,8 @@ import { CurrencyCard } from '@/components/dashboard/currency-card'
 import { StockCard } from '@/components/dashboard/stock-card'
 import { SectionHeader } from '@/components/ui/section-header'
 import { Button } from '@/components/ui/button'
+import Loading from './loading'
+import Error from './error'
 
 type FinanceItem =
   | { type: 'currency'; key: string; value: Currency }
@@ -16,39 +18,18 @@ export default function Dashboard() {
   const { data, isLoading, error } = useFinanceData()
   const [visibleItems, setVisibleItems] = useState(10)
 
-  if (isLoading)
-    return (
-      <div className='flex min-h-[80vh] items-center justify-center'>
-        <div className='text-primary animate-pulse'>Carregando...</div>
-      </div>
-    )
+  if (isLoading) return <Loading />
+  if (error) return <Error />
 
-  if (error)
-    return (
-      <div className='flex min-h-[80vh]  items-center justify-center'>
-        <div className='text-destructive'>
-          Erro ao carregar dados financeiros: {error.message}
-        </div>
-      </div>
-    )
-
-  if (!data)
-    return (
-      <div className='flex min-h-[80vh] items-center justify-center'>
-        <div className='text-muted-foreground'>Nenhum dado disponível</div>
-      </div>
-    )
-
-  // Combina moedas e ações em um único array
   const allItems: FinanceItem[] = [
-    ...Object.entries(data.currencies)
+    ...Object.entries(data?.currencies ?? {})
       .filter(([key]) => key !== 'source')
       .map(([key, value]) => ({
         type: 'currency' as const,
         key,
         value: value as Currency,
       })),
-    ...Object.entries(data.stocks).map(([key, value]) => ({
+    ...Object.entries(data?.stocks ?? {}).map(([key, value]) => ({
       type: 'stock' as const,
       key,
       value: value as Stock,
