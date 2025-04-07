@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { AlertCircle, RefreshCw } from 'lucide-react'
 
-export default function Error({ reset }: { reset?: () => void }) {
+export default function Error() {
   return (
     <div className='flex min-h-[80vh] flex-col items-center justify-center p-6'>
       <div className='text-center space-y-6 max-w-md'>

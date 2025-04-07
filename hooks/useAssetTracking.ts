@@ -29,7 +29,6 @@ export function useAssetTracking(symbol: string) {
         const data: FinanceApiResponse = await response.json()
         let assetData: AssetData | null = null
 
-        // Procura nos diferentes tipos de ativos
         if (
           symbol.includes('USD') ||
           symbol.includes('EUR') ||

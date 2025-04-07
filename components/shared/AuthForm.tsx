@@ -19,7 +19,6 @@ export function AuthForm() {
     register,
     handleSubmit,
     formState: { isSubmitting },
-    setError,
   } = useForm<AuthFormData>()
 
   const router = useRouter()
@@ -39,10 +38,8 @@ export function AuthForm() {
           return
         }
 
-        // Aguarda um pequeno intervalo para garantir que os cookies foram definidos
         await new Promise((resolve) => setTimeout(resolve, 50))
 
-        // Redireciona usando window.location para forçar um refresh completo
         window.location.replace('/dashboard')
       } else {
         const success = registerUser({ email, password })

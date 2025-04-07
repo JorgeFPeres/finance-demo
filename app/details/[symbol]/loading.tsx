@@ -1,6 +1,4 @@
 import { Skeleton } from '@/components/ui/skeleton'
-import { SectionHeader } from '@/components/ui/section-header'
-import { ArrowLeft } from 'lucide-react'
 
 export default function Loading() {
   return (
