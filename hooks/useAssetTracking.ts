@@ -35,6 +35,10 @@ export function useAssetTracking(symbol: string) {
           symbol.includes('EUR') ||
           symbol.includes('GBP') ||
           symbol.includes('ARS') ||
+          symbol.includes('CAD') ||
+          symbol.includes('AUD') ||
+          symbol.includes('JPY') ||
+          symbol.includes('CNY') ||
           symbol.includes('BTC')
         ) {
           const currency =

@@ -32,23 +32,23 @@ export function PriceChart({ data, isPositive }: PriceChartProps) {
     <div className='w-full h-[400px] mt-6'>
       <ResponsiveContainer width='100%' height='100%'>
         <LineChart data={formattedData}>
-          <CartesianGrid strokeDasharray='3 3' stroke='#333' />
-          <XAxis dataKey='time' stroke='#666' tick={{ fill: '#666' }} />
+          <CartesianGrid strokeDasharray='3 3' stroke='#FFF' />
+          <XAxis dataKey='time' stroke='#FFF' tick={{ fill: '#FFF' }} />
           <YAxis
-            stroke='#666'
-            tick={{ fill: '#666' }}
+            stroke='#FFF'
+            tick={{ fill: '#FFF' }}
             domain={['auto', 'auto']}
           />
           <Tooltip
             contentStyle={{
               backgroundColor: '#1a1a1a',
-              border: '1px solid #333',
+              border: '1px solid #FFF',
               borderRadius: '8px',
             }}
-            labelStyle={{ color: '#666' }}
+            labelStyle={{ color: '#FFF' }}
           />
           <Line
-            type='monotone'
+            type='linear'
             dataKey='price'
             stroke={lineColor}
             strokeWidth={2}

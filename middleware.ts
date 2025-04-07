@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 const publicRoutes = ['/login', '/register']
 const AUTH_COOKIE_NAME = 'auth'
 const LAST_ACTIVITY_COOKIE_NAME = 'lastActivity'
-const MAX_INACTIVITY_MINUTES = 5
+const MAX_INACTIVITY_MINUTES = 1
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl

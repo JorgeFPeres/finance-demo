@@ -13,7 +13,6 @@ export function useAuth() {
 
     checkAuth()
 
-    // Adiciona um listener para mudanças nos cookies
     const interval = setInterval(checkAuth, 1000)
 
     return () => clearInterval(interval)

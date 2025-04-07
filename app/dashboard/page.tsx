@@ -8,7 +8,7 @@ import { StockCard } from '@/components/dashboard/stock-card'
 import { SectionHeader } from '@/components/ui/section-header'
 import { Button } from '@/components/ui/button'
 import Loading from './loading'
-import Error from './error'
+import Error from '../error'
 
 type FinanceItem =
   | { type: 'currency'; key: string; value: Currency }
