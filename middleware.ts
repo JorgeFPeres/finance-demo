@@ -23,7 +23,10 @@ export function middleware(request: NextRequest) {
   }
 
   if (!auth && !isPublic) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    const response = NextResponse.redirect(new URL('/login', request.url))
+    response.cookies.delete(AUTH_COOKIE_NAME)
+    response.cookies.delete(LAST_ACTIVITY_COOKIE_NAME)
+    return response
   }
 
   if (auth && isPublic) {
@@ -31,6 +34,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (auth && lastActivity) {
+    console.log('lastActivity', lastActivity)
     const last = new Date(lastActivity)
     const now = new Date()
     const diffMs = now.getTime() - last.getTime()
@@ -40,6 +44,11 @@ export function middleware(request: NextRequest) {
       const response = NextResponse.redirect(new URL('/login', request.url))
       response.cookies.delete(AUTH_COOKIE_NAME)
       response.cookies.delete(LAST_ACTIVITY_COOKIE_NAME)
+      response.cookies.set(LAST_ACTIVITY_COOKIE_NAME, '', {
+        path: '/',
+        expires: new Date(0),
+        maxAge: 0,
+      })
       return response
     }
   }
@@ -49,7 +58,6 @@ export function middleware(request: NextRequest) {
     response.cookies.set(LAST_ACTIVITY_COOKIE_NAME, new Date().toISOString(), {
       path: '/',
       httpOnly: true,
-      sameSite: 'strict',
       secure: process.env.NODE_ENV === 'production',
     })
     return response

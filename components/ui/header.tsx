@@ -14,46 +14,76 @@ export function Header() {
   useEffect(() => {
     const checkSession = () => {
       const session = getSession()
+      if (!session) {
+        setUserEmail(null)
+        return
+      }
+
+      const hasAuthCookie = document.cookie
+        .split('; ')
+        .some((row) => row.startsWith('auth=true'))
+
+      if (!hasAuthCookie && session) {
+        clearSession()
+        setUserEmail(null)
+        return
+      }
+
       setUserEmail(session?.email || null)
     }
 
-    checkSession()
-    const sessionCheckInterval = setInterval(checkSession, 1000)
-
     const updateActivity = () => {
-      updateSessionActivity()
-    }
-
-    const checkClearSession = () => {
-      const clearSessionCookie = document.cookie.includes('clear_session=true')
-      if (clearSessionCookie) {
-        clearSession()
-        setUserEmail(null)
-        document.cookie =
-          'clear_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
-        router.push('/login')
-        router.refresh()
+      const session = getSession()
+      if (session) {
+        updateSessionActivity()
       }
     }
 
+    const checkInactivity = async () => {
+      const session = getSession()
+      if (!session) return
+
+      const lastActivity = session.lastActivity
+
+      if (lastActivity) {
+        const last = new Date(lastActivity)
+        const now = new Date()
+        const diffMs = now.getTime() - last.getTime()
+        const diffMin = diffMs / (1000 * 60)
+
+        if (diffMin > 5) {
+          try {
+            await clearSession()
+            setUserEmail(null)
+            router.refresh()
+          } catch (error) {
+            console.error('Erro ao fazer logout:', error)
+          }
+        }
+      }
+    }
+
+    checkSession()
+    updateActivity()
+
+    const sessionCheckInterval = setInterval(checkSession, 10000)
+    const inactivityCheckInterval = setInterval(checkInactivity, 10000)
+
     window.addEventListener('keydown', updateActivity)
     window.addEventListener('click', updateActivity)
-
-    const clearCheckInterval = setInterval(checkClearSession, 1000)
 
     return () => {
       window.removeEventListener('keydown', updateActivity)
       window.removeEventListener('click', updateActivity)
       clearInterval(sessionCheckInterval)
-      clearInterval(clearCheckInterval)
+      clearInterval(inactivityCheckInterval)
     }
-  }, [router])
+  }, [])
 
   const handleLogout = async () => {
     try {
       await clearSession()
       setUserEmail(null)
-      router.push('/login')
       router.refresh()
     } catch (error) {
       console.error('Erro ao fazer logout:', error)

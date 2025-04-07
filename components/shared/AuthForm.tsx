@@ -38,8 +38,12 @@ export function AuthForm() {
           setErrorMessage('Credenciais inválidas')
           return
         }
-        router.push('/dashboard')
-        router.refresh()
+
+        // Aguarda um pequeno intervalo para garantir que os cookies foram definidos
+        await new Promise((resolve) => setTimeout(resolve, 50))
+
+        // Redireciona usando window.location para forçar um refresh completo
+        window.location.replace('/dashboard')
       } else {
         const success = registerUser({ email, password })
         if (!success) {
@@ -53,7 +57,6 @@ export function AuthForm() {
           }
         )
         router.push('/login')
-        router.refresh()
       }
     } catch (error) {
       console.error('Erro na autenticação:', error)
