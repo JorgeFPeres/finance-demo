@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { PricePoint, AssetData, FinanceApiResponse } from '@/types/finance'
+import { FinanceApiResponse, AssetData, PricePoint } from '@/lib/types/finance'
 
 const API_KEY = process.env.NEXT_PUBLIC_HG_FINANCE_API_KEY
 const BASE_URL = 'https://api.hgbrasil.com/finance/quotations'
