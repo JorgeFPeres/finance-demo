@@ -69,7 +69,7 @@ export default function Dashboard() {
             <Button
               onClick={showMoreItems}
               variant='outline'
-              className='w-full max-w-xs'
+              className='w-full max-w-xs bg-indigo-400 hover:bg-indigo-500 text-white'
             >
               Ver mais
             </Button>

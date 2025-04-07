@@ -9,10 +9,12 @@ export function UserNav({ email, onLogout }: UserNavProps) {
   return (
     <div className='flex items-center gap-4'>
       <div className='flex items-center gap-2'>
-        <div className='bg-indigo-300 w-8 h-8 rounded-full flex items-center justify-center'>
-          <User size={16} className='text-primary' />
+        <div className='bg-indigo-300 text-white w-8 h-8 rounded-full flex items-center justify-center'>
+          <User size={16} className='text-white' />
         </div>
-        <span className='text-sm cursor-default font-medium'>{email}</span>
+        <span className='text-sm cursor-default font-medium max-w-12 truncate text-ellipsis sm:max-w-full'>
+          {email}
+        </span>
       </div>
       <button
         onClick={onLogout}

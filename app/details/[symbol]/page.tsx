@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { SectionHeader } from '@/components/ui/section-header'
 import { ArrowLeft } from 'lucide-react'
 import { useAssetTracking } from '@/hooks/useAssetTracking'
-import { PriceChart } from '@/components/ui/price-chart'
+import { PriceChart } from '@/components/details/price-chart'
 import Error from '../../error'
 import Loading from './loading'
 

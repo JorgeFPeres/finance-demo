@@ -1,4 +1,4 @@
-import { AuthForm } from '@/components/shared/AuthForm'
+import { AuthForm } from '@/components/shared/auth-form'
 
 export default function RegisterPage() {
   return (

@@ -13,6 +13,7 @@ export async function getFinanceData(): Promise<FinanceData> {
   if (!response.ok) {
     throw new Error('Error fetching finance data')
   }
+  console.log(response)
 
   const data = await response.json()
   return data.results
