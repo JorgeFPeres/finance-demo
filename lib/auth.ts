@@ -39,11 +39,9 @@ export async function signIn(
 
     const now = new Date().toISOString()
 
-    // Define os cookies com opções específicas
     document.cookie = `${AUTH_COOKIE_NAME}=true; path=/; sameSite=strict`
     document.cookie = `${LAST_ACTIVITY_COOKIE_NAME}=${now}; path=/; sameSite=strict`
 
-    // Define a sessão
     const session: Session = {
       email,
       lastActivity: now,
@@ -83,14 +81,11 @@ export function updateSessionActivity() {
 
 export async function clearSession(): Promise<void> {
   try {
-    // Remove a sessão do sessionStorage
     sessionStorage.removeItem(SESSION_KEY)
 
-    // Remove os cookies
     document.cookie = `${AUTH_COOKIE_NAME}=; Max-Age=0; path=/`
     document.cookie = `${LAST_ACTIVITY_COOKIE_NAME}=; Max-Age=0; path=/`
 
-    // Força a limpeza do sessionStorage caso ainda exista
     if (sessionStorage.getItem(SESSION_KEY)) {
       sessionStorage.clear()
     }
