@@ -1,4 +1,4 @@
-# Franq Finance Dashboard
+# Finance Dashboard
 
 Um dashboard financeiro moderno construído com Next.js 15, que exibe dados em tempo real do mercado financeiro. O projeto inclui autenticação de usuário, gerenciamento de sessão e visualizações de dados dinâmicas.
 
